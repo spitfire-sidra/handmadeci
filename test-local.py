@@ -22,6 +22,12 @@ def get_changed_file_paths():
         'src/'
     ])
 
+    print 'Changed Files Under src/ Since Last Commit'
+    if not stdout_str:
+        print 'None'
+    else:
+        print stdout_str
+
     file_path_regex = re.compile(r'^.\s+(?P<file_path>.+)')
 
     file_paths = []
