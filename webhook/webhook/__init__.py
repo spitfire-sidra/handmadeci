@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 import os
 
+from celery import Celery
+import iron_celery
+
 from flask import Flask
 from flask import json
 from flask import jsonify
@@ -26,9 +29,11 @@ def webhook():
             changed_files = json_content['pull_request']['changed_files']
             patch_url = json_content['patch_url']
             default_branch = json_content['repository']['default_branch']
+            clone_url = json_content['head']['clone_url']
             print url
             print changed_files
             print patch_url
             print default_branch
+            print clone_url
 
     return ''
