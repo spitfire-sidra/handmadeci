@@ -27,13 +27,17 @@ def webhook():
         if 'pull_request' in json_content:
             url = json_content['pull_request']['url']
             changed_files = json_content['pull_request']['changed_files']
-            patch_url = json_content['patch_url']
+            patch_url = json_content['pull_request']['patch_url']
             default_branch = json_content['repository']['default_branch']
-            clone_url = json_content['head']['clone_url']
+            clone_url = json_content['pull_request']['head']['repo']['clone_url']
+            commit_id = json_content['pull_request']['head']['sha']
+            branch = json_content['pull_request']['head']['ref']
             print url
             print changed_files
             print patch_url
             print default_branch
             print clone_url
+            print branch
+            print commit_id
 
     return ''
