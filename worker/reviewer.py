@@ -5,11 +5,16 @@ import subprocess
 from urlparse import urlparse
 
 def main(url, prid, branch):
-    stdout_str = subprocess.check_output([
-        'git',
-        'clone',
-        url
-    ])
+    try:
+        subprocess.call([
+            'git',
+            'clone',
+            url
+        ])
+    except subprocess.CalledProcessError as e:
+        if 'already exists and is not an empty directory' in e.stderr:
+            pass
+
     path = urlparse(url).path
     print path
     print path.split('/')[-1][:-4]
@@ -66,6 +71,18 @@ def main(url, prid, branch):
                 f, line_no, __, comment = line.split(':')
                 print line_no, comment.strip()
 
+    subprocess.call([
+        'git',
+        'checkout',
+        'master' # default branch
+    ])
+
+    subprocess.call([
+        'git',
+        'branch',
+        '-D',
+        branch
+    ])
 
 if __name__ == '__main__':
     main('https://github.com/spitfire-sidra/handmadeci.git', 1, 'webhook-worker')
