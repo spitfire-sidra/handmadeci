@@ -64,7 +64,7 @@ def main():
         testcase_paths.append(testcase_path)
 
     if testcase_paths:
-        subprocess.call(['py.test'] + testcase_paths)
+        subprocess.call(['py.test', '--cov=src', '--cov-report=term-missing'] + testcase_paths)
 
 
 if __name__ == '__main__':

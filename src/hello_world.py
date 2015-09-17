@@ -5,4 +5,5 @@ def return_hello_world():
 
 
 def return_float():
+    ''' returns 0.1 '''
     return .1
