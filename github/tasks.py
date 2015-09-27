@@ -1,89 +1,47 @@
 # -*- coding: utf-8 -*-
-from github.helpers import get_task_queue
+import os
+import shutil
+from urlparse import urlparse
+
+from github.heplers.git import GitHelper
+from github.helpers.taskqueue import get_task_queue
+from github.linters.flake8 import get_flake8_result
+from github.lib.api import post_comment
 
 
 TASK_QUEUE = get_task_queue()
+GIT = GitHelper()
 
 
 @TASK_QUEUE.task
-def code_review(url, prid, branch, api, commit_id):
-    try:
-        subprocess.call([
-            "git",
-            "clone",
-            url
-        ])
-    except subprocess.CalledProcessError as e:
-        if "already exists and is not an empty directory" in e.stderr:
-            pass
+def code_review(clone_url, pull_request_id, br, review_comments_api, commit_id, default_br="master"):
 
-    path = urlparse(url).path
-    print path
-    print path.split("/")[-1][:-4]
+    # go to workspace first
+    workspace_path = os.path.join(os.getcwd(), "workspace")
+    if os.path.exists(workspace_path) and os.path.isdir(workspace_path):
+        os.chdir(workspace_path)
+    elif not os.path.exists(workspace_path):
+        shutil.makedirs(workspace_path)
+    else:
+        raise EnvironmentError("path: {0} is not a folder".format(workspace_path))
+
+    GIT.clone(clone_url)
+
+    # go to the repo
+    path = urlparse(clone_url).path
     os.chdir(path.split("/")[-1][:-4])
 
-    stdout_str = subprocess.check_output([
-        "git",
-        "fetch",
-        "origin",
-        "pull/{0}/head:{1}".format(prid, branch)
-    ])
+    GIT.fetch_qull_request(pull_request_id, br)
+    GIT.checkout(br)
 
-    stdout_str = subprocess.check_output([
-        "git",
-        "checkout",
-        branch
-    ])
+    remote_default_br = "origin/{0}".format(default_br)
+    changed_files = GIT.get_changed_files(remote_default_br)
 
-    stdout_str = subprocess.check_output([
-        "git",
-        "--no-pager",
-        "diff",
-        "--no-color",
-        "--name-status",
-        "--diff-filter=AMRT",
-        "--ignore-space-at-eol",
-        "origin/master",
-    ])
-    print stdout_str
+    for f in changed_files:
+        comment_tuples = get_flake8_result(f)
+        for c in comment_tuples:
+            post_comment(review_comments_api, commit_id, f, int(c[0]), c[1])
 
-    file_path_regex = re.compile(r"^.\s+(?P<file_path>.+)")
-
-    file_paths = []
-
-    stdout_lines = stdout_str.split("\n")
-    for line in stdout_lines:
-        match_obj = file_path_regex.search(line)
-        if match_obj:
-            file_paths.append(match_obj.group("file_path"))
-            try:
-                stdout_str = subprocess.check_output([
-                    "flake8",
-                    match_obj.group("file_path"),
-                ],
-                stderr=subprocess.STDOUT
-                )
-            except subprocess.CalledProcessError as e:
-                stdout_str = e.output
-
-            lines = stdout_str.split("\n")
-            for line in lines:
-                if not line:
-                    continue
-                f, line_no, __, comment = line.split(":")
-                #leave_comment(api, commit_id, path, pos, comment)
-                leave_comment(api, commit_id, f, int(line_no), comment.strip())
-
-    subprocess.call([
-        "git",
-        "checkout",
-        "master" # default branch
-    ])
-
-    subprocess.call([
-        "git",
-        "branch",
-        "-D",
-        branch
-    ])
-
+    # cleanup
+    GIT.checkout("master")
+    GIT.delete_branch(br)

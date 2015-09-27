@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import re
 import subprocess
 
 from pipes import quote
@@ -20,6 +21,6 @@ def get_flake8_result(file_path):
 
         match = lint_re.search(line)
         if match:
-            result_tuples.append((match.group("file"), match.group("pos"), match.group("lint")))
+            result_tuples.append((match.group("pos"), match.group("lint")))
 
     return result_tuples

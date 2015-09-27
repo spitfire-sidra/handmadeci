@@ -1,15 +1,26 @@
 # -*- coding: utf-8 -*-
 import requests
-from requests.auth import HTTPBasicAuth
+from flask import json
+
+from github import config
 
 
-def leave_comment(api, commit_id, path, pos, comment):
-    r = requests.post(api, data=json.dumps({
-        'body': comment,
-        'commit_id': commit_id,
-        'position': pos,
-        'path': path,
+_HEADERS = {
+    'Authorizatio': '{0} OAUTH-TOKEN'.format(config.GITHUB_ACCESS_TOKEN),
+}
+
+
+def post_comment(api, commit_id, path, pos, comment):
+    resp = requests.post(
+        api,
+        data=json.dumps({
+            'commit_id': commit_id,
+            'path': path,
+            'position': pos,
+            'body': comment,
         }),
-        auth=HTTPBasicAuth(account.user, account.passwd)
+        headers=_HEADERS
     )
-    print r.content
+
+    if config.DEBUG:
+        print resp.content

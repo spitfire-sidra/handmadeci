@@ -7,8 +7,11 @@ from github import config
 def get_task_queue():
 
     if config.IRONMQ is True:
-        celery = Celery(broker=BROKER_URL, backend=CELERY_RESULT_BACKEND)
+        task_queue = Celery(
+            broker=config.IRONMQ_BROKER_URL,
+            backend=config.IRONMQ_CACHE_BACKEND
+        )
     else:
-        celery = Celery(broker=RABBITMQ_BROKER_URL)
+        task_queue = Celery(broker=config.RABBITMQ_BROKER_URL)
 
-    return celery
+    return task_queue
