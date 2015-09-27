@@ -1,0 +1,27 @@
+# -*- coding: utf-8 -*-
+import os
+
+# should be False when running on production
+DEBUG = True
+
+# port number for github webhook
+PORT_NUMBER = 4567
+
+# flask releated configuration
+FLASK_SESSION_SECRET_KEY = os.environ.get("SESSION_SECRET_KEY", "please.put.your.session.secret.key.here")
+
+# message broker configuration
+# iron.io, change to false if you want to use rabbitmq
+IRONMQ = False
+IRONMQ_CONNECT_TIMEOUT = 90
+IRONMQ_TOKEN = ""
+IRONMQ_PROJECT_ID = ""
+IRONMQ_BROKER_URL = "ironmq://{0}:{1}@?connect_timeout={2}".format(IRONMQ_PROJECT_ID, IRONMQ_TOKEN, IRONMQ_CONNECT_TIMEOUT)
+IRONMQ_RESULT_BACKEND = "ironcache:://{0}:{1}".format(IRONMQ_PROJECT_ID, IRONMQ_TOKEN)
+
+# rabbitmq
+RABBITMQ = not IRONMQ
+RABBITMQ_BROKER_URL = "amqp://guest:guest@localhost:5672//"
+
+# github related configuration
+GITHUB_ACCESS_TOKEN = ""
