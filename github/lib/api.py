@@ -2,7 +2,7 @@
 import requests
 from flask import json
 
-from github import config
+import config
 
 
 _HEADERS = {

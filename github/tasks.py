@@ -3,10 +3,10 @@ import os
 import shutil
 from urlparse import urlparse
 
-from github.heplers.git import GitHelper
-from github.helpers.taskqueue import get_task_queue
-from github.linters.flake8 import get_flake8_result
-from github.lib.api import post_comment
+from helpers.git import GitHelper
+from helpers.taskqueue import get_task_queue
+from linters.flake8 import get_flake8_result
+from lib.api import post_comment
 
 
 TASK_QUEUE = get_task_queue()

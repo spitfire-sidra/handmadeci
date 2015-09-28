@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from celery import Celery
 
-from github import config
+import config
 
 
 def get_task_queue():
