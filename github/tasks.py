@@ -17,11 +17,12 @@ GIT = GitHelper()
 def code_review(clone_url, pull_request_id, br, review_comments_api, commit_id, default_br="master"):
 
     # go to workspace first
-    workspace_path = os.path.join(os.getcwd(), "workspace")
+    cwd = os.getcwd()
+    workspace_path = os.path.join(cwd, "workspace")
     if os.path.exists(workspace_path) and os.path.isdir(workspace_path):
         os.chdir(workspace_path)
     elif not os.path.exists(workspace_path):
-        shutil.makedirs(workspace_path)
+        os.makedirs(workspace_path)
     else:
         raise EnvironmentError("path: {0} is not a folder".format(workspace_path))
 
@@ -49,3 +50,4 @@ def code_review(clone_url, pull_request_id, br, review_comments_api, commit_id, 
     # cleanup
     GIT.checkout("master")
     GIT.delete_branch(br)
+    os.chdir(cwd)

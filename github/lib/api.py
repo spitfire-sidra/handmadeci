@@ -6,7 +6,7 @@ import config
 
 
 _HEADERS = {
-    'Authorizatio': '{0} OAUTH-TOKEN'.format(config.GITHUB_ACCESS_TOKEN),
+    'Authorization': 'token {0}'.format(config.GITHUB_ACCESS_TOKEN),
 }
 
 
@@ -23,4 +23,10 @@ def post_comment(api, commit_id, path, pos, comment):
     )
 
     if config.DEBUG:
+        print api
+        print commit_id
+        print path
+        print pos
+        print comment
+        print _HEADERS
         print resp.content

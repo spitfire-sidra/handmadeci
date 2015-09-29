@@ -14,7 +14,7 @@ def get_flake8_result(file_path):
         output = e.output
 
     result_tuples = []
-    lint_re = re.compile(r"(?P<file>\w+):(?P<pos>\d+):(:?\d+):\s(?P<lint>\w+)")
+    lint_re = re.compile(r"(?P<file>\w+):(?P<pos>\d+):(:?\d+):\s(?P<lint>.+)$")
     for line in output.split("\n"):
         if not line:
             continue
