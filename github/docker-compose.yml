@@ -1,0 +1,9 @@
+web:
+    build: .
+    ports:
+        - "4567:4567"
+    links:
+        - rabbitmq
+
+rabbitmq:
+    image: rabbitmq

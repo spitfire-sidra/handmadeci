@@ -21,7 +21,9 @@ IRONMQ_RESULT_BACKEND = "ironcache:://{0}:{1}".format(IRONMQ_PROJECT_ID, IRONMQ_
 
 # rabbitmq
 RABBITMQ = not IRONMQ
-RABBITMQ_BROKER_URL = "amqp://guest:guest@localhost:5672//"
+RABBITMQ_ADDR = os.getenv("RABBITMQ_PORT_5672_TCP_ADDR", "127.0.0.1")
+RABBITMQ_PORT = os.getenv("RABBITMQ_PORT_5672_TCP_PORT", "5672")
+RABBITMQ_BROKER_URL = "amqp://guest:guest@{0}:{1}//".format(RABBITMQ_ADDR, RABBITMQ_PORT)
 
 # github related configuration
 GITHUB_ACCESS_TOKEN = ""

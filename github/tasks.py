@@ -38,9 +38,13 @@ def code_review(clone_url, pull_request_id, br, review_comments_api, commit_id, 
     changed_files = GIT.get_changed_files(remote_default_br)
 
     for f in changed_files:
-        comment_tuples = get_flake8_result(f)
-        for c in comment_tuples:
-            post_comment(review_comments_api, commit_id, f, int(c[0]), c[1])
+        __, extension = os.path.splitext(f)
+
+        if extension == ".py":
+
+            comment_tuples = get_flake8_result(f)
+            for c in comment_tuples:
+                post_comment(review_comments_api, commit_id, f, int(c[0]), c[1])
 
     # cleanup
     GIT.checkout("master")
