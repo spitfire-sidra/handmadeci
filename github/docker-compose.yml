@@ -1,9 +1,18 @@
 web:
     build: .
+    command: sh run-webhookapp.sh
     ports:
         - "4567:4567"
     links:
-        - rabbitmq
+        - rabbitmq:rabbitmq
+
+worker:
+    build: .
+    command: sh run-celery.sh
+    links:
+        - rabbitmq:rabbitmq
 
 rabbitmq:
     image: rabbitmq
+    ports:
+        - "5672:5672"

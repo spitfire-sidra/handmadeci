@@ -48,7 +48,7 @@ class GitHelper(object):
             'git',
             'fetch',
             'origin',
-            'pull/{0}/head:{1}'.format(quote(pull_request_id), quote(br))
+            'pull/{0}/head:{1}'.format(pull_request_id, quote(br))
         ])
 
     @classmethod

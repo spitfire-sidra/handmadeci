@@ -31,7 +31,7 @@ def code_review(clone_url, pull_request_id, br, review_comments_api, commit_id, 
     path = urlparse(clone_url).path
     os.chdir(path.split("/")[-1][:-4])
 
-    GIT.fetch_qull_request(pull_request_id, br)
+    GIT.fetch_pull_request(pull_request_id, br)
     GIT.checkout(br)
 
     remote_default_br = "origin/{0}".format(default_br)
